@@ -1,4 +1,4 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Model, Schema } from "mongoose";
 import type { UserType } from "../models/User.js";
 import type { TagsType } from "../models/Tags.js";
 import type { LinkType } from "../models/Link.js";
@@ -29,7 +29,7 @@ const tagSchema = new Schema({
 })
 
 
-export const User = mongoose.model<UserType>("User", userSchema);
-export const Tags = mongoose.model<TagsType>("Tag", tagSchema);
-export const Link = mongoose.model<LinkType>("Link", linkSchema);
-export const Content = mongoose.model<ContentType>("Content", contentSchema);
+export const UserModel = mongoose.model<UserType>("User", userSchema);
+export const TagsModel = mongoose.model<TagsType>("Tag", tagSchema);
+export const LinkModel = mongoose.model<LinkType>("Link", linkSchema);
+export const ContentModel = mongoose.model<ContentType>("Content", contentSchema);

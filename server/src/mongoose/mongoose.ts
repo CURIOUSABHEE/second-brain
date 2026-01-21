@@ -1,17 +1,20 @@
 import mongoose from "mongoose";
-import dotenv from "dotenv"
+import dotenv from "dotenv";
 
 dotenv.config();
 
-const MONGO_URL: string = process.env.MONGO_URL || " ";
+const MONGO_URI = process.env.MONGO_URI;
 
-if (!MONGO_URL) {
-    throw new Error("MongoDB url ENV is not working");
+if (!MONGO_URI) {
+    throw new Error("MONGO_URL not defined");
 }
 
-mongoose.connect(MONGO_URL)
-    .then(() => {
-        console.log("mongoDb is connected");
-    }).catch(() => {
-        console.log("Somthing went wrong with DB connection")
-    })
+export const connectDB = async () => {
+    try {
+        await mongoose.connect(MONGO_URI);
+        console.log("MongoDB connected");
+    } catch (error) {
+        console.error("MongoDB connection error:", error);
+        process.exit(1);
+    }
+};
