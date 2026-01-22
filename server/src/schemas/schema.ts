@@ -12,7 +12,7 @@ const userSchema = new Schema({
 const ContentValues = ['image', 'video', 'blog'];
 
 const contentSchema = new Schema({
-    type: { type: String, enum: ContentValues, required: true },
+    type: { type: String, enum: ContentValues },
     title: { type: String, required: true },
     url: { type: String, required: true },
     tags: [{ type: mongoose.Schema.Types.ObjectId, ref: "Tag" }],
@@ -20,9 +20,10 @@ const contentSchema = new Schema({
 })
 
 const linkSchema = new Schema({
-    hash: { type: String, required: true },
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true }
-})
+    hash: { type: String, required: true, unique: true, index: true },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+    isActive: { type: Boolean, default: true }
+}, { timestamps: true })
 
 const tagSchema = new Schema({
     title: { type: String, required: true, unique: true },

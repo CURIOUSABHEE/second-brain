@@ -2,14 +2,14 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import express from "express";
-import { UserModel } from "./schemas/schema.js";
+import { ContentModel, UserModel } from "./schemas/schema.js";
 import mongoose from "mongoose";
 import jwt from "jsonwebtoken"
 import { MONGO_URI } from "./config.js";
 import { secret } from "./config.js";
 import { userMiddleware } from "./middleware.js"
+import { PORT } from "./config.js";
 
-const PORT: number = 3000;
 const app: express.Application = express();
 
 
@@ -67,7 +67,7 @@ app.post("/api/v1/signin", async (req, res) => {
             res.json({ token });
         } else {
             res.status(403).json({
-                message: "Invalid Credientials"
+                message: "Invalid Credentials"
             });
         }
     } catch (err) {
@@ -79,24 +79,68 @@ app.post("/api/v1/signin", async (req, res) => {
 
 })
 
-app.post("/api/v1/content", (req, res) => {
+app.post("/api/v1/content", userMiddleware, async (req, res) => {
+    const { title, url, type } = req.body;
+
+    const content = await ContentModel.create({
+        title,
+        url,
+        type,
+        userId: req.userId,
+        tags: []
+    })
+
+    if (content) {
+        res.status(200).json({
+            message: "content added"
+        })
+    } else {
+        res.status(403).json({
+            message: "cannot add the content"
+        });
+    }
 
 })
 
-app.get("/api/v1/content", (req, res) => {
+app.get("/api/v1/content", userMiddleware, async (req, res) => {
+    try {
+        const userId = req.userId;
+        const content = await ContentModel.find({
+            userId: userId,
+        }).populate("userId", "username");
+
+        res.status(200).json({
+            content
+        })
+
+    } catch (error) {
+        res.status(403).json({
+            message: "could not fetch the content"
+        })
+    }
+
 
 })
 
-app.delete("/api/v1/content", (req, res) => {
+app.delete("/api/v1/content", async (req, res) => {
+    const contentId = req.body.contentId;
+    await ContentModel.deleteMany({
+        contentId,
+        userId: req.userId,
+    })
+
+    res.status(200).json({
+        message: "Deleted"
+    })
 
 })
 
 app.post("/api/v1/brain/share", (req, res) => {
-
+    
 })
 
-app.post("/api/v1/brain/:sharelink", (req, res) => {
-
+app.get("/api/v1/brain/:sharelink", (req, res) => {
+    res.status(501).json({ message: "Not implemented yet" });
 })
 
 
