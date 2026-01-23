@@ -5,10 +5,12 @@ import express from "express";
 import { ContentModel, UserModel } from "./schemas/schema.js";
 import mongoose from "mongoose";
 import jwt from "jsonwebtoken"
-import { MONGO_URI } from "./config.js";
+import { domain, MONGO_URI } from "./config.js";
 import { secret } from "./config.js";
 import { userMiddleware } from "./middleware.js"
 import { PORT } from "./config.js";
+import { LinkModel } from "./schemas/schema.js";
+import { randomBytes } from "node:crypto";
 
 const app: express.Application = express();
 
@@ -122,7 +124,7 @@ app.get("/api/v1/content", userMiddleware, async (req, res) => {
 
 })
 
-app.delete("/api/v1/content", async (req, res) => {
+app.delete("/api/v1/content", userMiddleware, async (req, res) => {
     const contentId = req.body.contentId;
     await ContentModel.deleteMany({
         contentId,
@@ -135,12 +137,66 @@ app.delete("/api/v1/content", async (req, res) => {
 
 })
 
-app.post("/api/v1/brain/share", (req, res) => {
-    
+app.post("/api/v1/brain/share", userMiddleware, async (req, res) => {
+    const { share } = req.body;
+
+    if (share) {
+        const existingLink = await LinkModel.findOne({
+            userId: req.userId,
+        })
+        if (existingLink) {
+            res.json({
+                hash: existingLink.hash,
+            })
+            return;
+        } else {
+            const hash = randomBytes(10).toString("hex");
+            await LinkModel.create({
+                hash: hash,
+                userId: req.userId
+            })
+
+            res.json({
+                hash
+            })
+        }
+    } else {
+        await LinkModel.deleteOne({
+            userId: req.userId,
+        })
+    }
 })
 
-app.get("/api/v1/brain/:sharelink", (req, res) => {
-    res.status(501).json({ message: "Not implemented yet" });
+
+app.get("/api/v1/brain/:sharelink", userMiddleware, async (req, res) => {
+    const hash = req.params.sharelink;
+    const link = await LinkModel.findOne({
+        hash
+    })
+    if (!hash) {
+        res.json({
+            message: "Sorry Incorrect Input",
+        })
+        return;
+    }
+
+    const content = await ContentModel.findOne({
+        user: link?.userId,
+    })
+
+    const user = await UserModel.findOne({
+        _id: link?.userId,
+    })
+    if (!user) {
+        res.status(411).json({
+            message: "user not found, error should ideally not happen"
+        })
+        return;
+    }
+    res.json({
+        username: user.username,
+        content: content
+    })
 })
 
 
