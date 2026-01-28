@@ -9,7 +9,7 @@ const userSchema = new Schema({
     password: { type: String, required: true }
 })
 
-const ContentValues = ['image', 'video', 'blog'];
+const ContentValues = ['twitter', 'youtube', 'blog', 'notion'];
 
 const contentSchema = new Schema({
     type: { type: String, enum: ContentValues },

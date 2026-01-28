@@ -37,7 +37,7 @@ const Card = (props: CardProps) => {
             allowFullScreen
           ></iframe>
         )}
-        {props.type == "X" && (
+        {props.type == "twitter" && (
           <blockquote className="twitter-tweet">
             <a href={props.link.replace("x.com", "twitter.com")}></a>
           </blockquote>

@@ -1,13 +1,21 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CreateContentModal from "../components/ui/CreateContentModal";
 import Button from "../components/ui/Button";
 import Card from "../components/ui/Card";
 import PlusIcon from "../icons/PlusIcon";
 import ShareIcon from "../icons/ShareIcon";
 import Sidebar from "../components/ui/Sidebar";
+import useContent from "../hook/useContent";
+import axios from "axios";
+import { backend_url, frontend_url } from "../config";
 
 function Dashboard() {
   const [modalOpen, setModalOpen] = useState(false);
+  const { contents, refresh } = useContent();
+
+  useEffect(() => {
+    refresh();
+  }, [modalOpen]);
   return (
     <>
       <Sidebar />
@@ -31,22 +39,27 @@ function Dashboard() {
             size="md"
             startIcon={<ShareIcon size="md" />}
             variants="secondary"
-            onClick={() => {
-              console.log("heeloe");
+            onClick={async () => {
+              const response = await axios.post(
+                `${backend_url}/api/v1/brain/share`,
+                {
+                  share: true,
+                },
+                {
+                  headers: {
+                    Authorization: localStorage.getItem("token"),
+                  },
+                },
+              );
+              const shareUrl = `${frontend_url}/share/${response.data.hash}`;
+              alert(shareUrl);
             }}
           />
         </div>
-        <div className="flex gap-4">
-          <Card
-            title="Republic Day special"
-            link="https://www.youtube.com/watch?v=XaNrzv09j1I"
-            type="youtube"
-          />
-          <Card
-            title="Republic Day special"
-            link="https://x.com/EmmanuelMacron/status/2015654612162802053"
-            type="X"
-          />
+        <div className="flex gap-4 flex-wrap">
+          {contents.map(({ key, title, url, type }) => (
+            <Card key={key} title={title} link={url} type={type} />
+          ))}
         </div>
       </div>
     </>

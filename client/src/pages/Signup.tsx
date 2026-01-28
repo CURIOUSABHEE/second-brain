@@ -3,21 +3,27 @@ import Input from "../components/ui/Input";
 import Button from "../components/ui/Button";
 import { backend_url } from "../config";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Signup = () => {
-  const usernameRef = useRef<HTMLInputElement>("");
-  const passwordRef = useRef<HTMLInputElement>("");
+  const usernameRef = useRef<HTMLInputElement | null>(null);
+  const passwordRef = useRef<HTMLInputElement | null>(null);
+  const navigate = useNavigate();
 
   const signup = async () => {
     const username = usernameRef.current?.value;
     const password = passwordRef.current?.value;
-    await axios.post(`${backend_url}/api/v1/signup`, {
-      data: {
+    await axios
+      .post(`${backend_url}/api/v1/signup`, {
         username,
         password,
-      },
-    });
-    alert("You have signed up.");
+      })
+      .then((data) => {
+        console.log(data);
+        alert("You have signed up.");
+        navigate("/signin");
+      })
+      .catch((error) => alert(error));
   };
   return (
     <div className="h-screen w-screen flex items-center justify-center bg-gray-200">
