@@ -1,0 +1,1 @@
+export const backend_url = "https://second-brain-1-xtj2.onrender.com/"

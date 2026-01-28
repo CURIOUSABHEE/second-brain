@@ -1,23 +1,20 @@
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
-import Button from "./components/ui/Button";
-import Card from "./components/ui/Card";
-import PlusIcon from "./icons/PlusIcon";
+import Dashboard from "./pages/Dashboard";
+import Signin from "./pages/Signin";
+import Signup from "./pages/Signup";
 
 function App() {
   return (
     <>
-      <Button
-        text="Add Content"
-        size="md"
-        startIcon={<PlusIcon size="md" />}
-        variants="primary"
-        onClick={() => {
-          console.log("heeloe");
-        }}
-      />
-      <Card title="Notion Page" subtitle="hello world" />
-      <Card title="Notion Page" subtitle="hello world" />
-      <Card title="Notion Page" subtitle="hello world" />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/signin" element={<Signin />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/Dashboard" element={<Dashboard />} />
+        </Routes>
+      </BrowserRouter>
+      {/* <Dashboard /> */}
     </>
   );
 }

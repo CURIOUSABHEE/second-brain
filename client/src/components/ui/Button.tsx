@@ -6,7 +6,9 @@ export interface ButtonProps {
   text: string;
   startIcon?: React.ReactNode;
   // endIcon?: any;
-  onClick: () => void;
+  onClick?: () => void;
+  fullWidth?: boolean;
+  loading?: boolean;
 }
 
 const sizeClasses = {
@@ -16,17 +18,17 @@ const sizeClasses = {
 };
 
 const variantClasses = {
-  primary: "bg-blue-500 text-white",
-  secondary: "bg-gray-200 text-black",
+  primary: "bg-purple-600 text-white",
+  secondary: "bg-purple-300 text-purple-500",
 };
+const defaultStyle =
+  "flex items-center border-2 border-blue-800 rounded-md bg-blue-200 font-light";
 
 const Button = (props: ButtonProps) => {
   return (
     <button
-      className={`flex items-center border-2 border-blue-800 rounded-md bg-blue-200 font-bold ${sizeClasses[props.size]} ${variantClasses[props.variants]}`}
-      onClick={() => {
-        console.log("button Clicked");
-      }}
+      className={`${defaultStyle} ${sizeClasses[props.size]} ${variantClasses[props.variants]} ${props.fullWidth ? "w-full justify-center" : ""} ${props.loading ? "opacity-55" : ""}`}
+      onClick={props.onClick}
     >
       {props.startIcon ? <div className="pr-2">{props.startIcon}</div> : null}
       {props.text}
