@@ -11,11 +11,19 @@ import { userMiddleware } from "./middleware.js"
 import { PORT } from "./config.js";
 import { LinkModel } from "./schemas/schema.js";
 import { randomBytes } from "node:crypto";
+import cors from "cors";
 
 const app: express.Application = express();
 
 
 app.use(express.json());
+app.use(cors({
+    origin: [
+        "http://localhost:5173",
+        "http://localhost:5174",
+    ],
+    credentials: true
+}));
 
 app.get("/health", (req, res) => {
     console.log("The server is running all right")
