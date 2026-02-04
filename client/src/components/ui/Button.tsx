@@ -18,11 +18,13 @@ const sizeClasses = {
 };
 
 const variantClasses = {
-  primary: "bg-purple-600 text-white",
-  secondary: "bg-purple-300 text-purple-500",
+  primary:
+    "bg-indigo-600 text-white hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2",
+  secondary:
+    "bg-white text-indigo-600 border border-indigo-600 hover:bg-indigo-50 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2",
 };
 const defaultStyle =
-  "flex items-center border-2 border-blue-800 rounded-md bg-blue-200 font-light";
+  "flex items-center rounded-md font-medium transition-colors duration-200";
 
 const Button = (props: ButtonProps) => {
   return (
