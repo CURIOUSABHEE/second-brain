@@ -40,6 +40,9 @@ const Signup = () => {
             loading={false}
           />
         </div>
+        <div>
+          <span>already have account? Signin</span>
+        </div>
       </div>
     </div>
   );

@@ -1,50 +1,76 @@
-import DeleteIcon from "../../icons/DeleteIcon";
-import ShareIcon from "../../icons/ShareIcon";
+import * as React from "react"
 
-export interface CardProps {
-  title: string;
-  type: string;
-  link: string;
-}
+import { cn } from "@/lib/utils"
 
-const Card = (props: CardProps) => {
-  return (
-    <div className="p-4 shadow-md rounded-2xl max-w-72 border border-slate-200 font-normal min-h-36">
-      <div className="flex justify-between items-center">
-        <div className="flex gap-2 items-center font-lg">
-          <div className="text-gray-500 flex">
-            <ShareIcon size="md" />
-          </div>
-          <h1>{props.title}</h1>
-        </div>
-        <div className="flex gap-2 items-center text-gray-500">
-          <a href={props.link}>
-            <ShareIcon size="md" />
-          </a>
-          <DeleteIcon />
-        </div>
-      </div>
+const Card = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn(
+      "rounded-xl border bg-card text-card-foreground shadow",
+      className
+    )}
+    {...props}
+  />
+))
+Card.displayName = "Card"
 
-      <div className="p-2">
-        {props.type === "youtube" && (
-          <iframe
-            className="w-full"
-            src={props.link.replace("watch?v=", "embed/")}
-            title="YouTube video player"
-            frameBorder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            referrerPolicy="strict-origin-when-cross-origin"
-            allowFullScreen
-          ></iframe>
-        )}
-        {props.type == "twitter" && (
-          <blockquote className="twitter-tweet">
-            <a href={props.link.replace("x.com", "twitter.com")}></a>
-          </blockquote>
-        )}
-      </div>
-    </div>
-  );
-};
+const CardHeader = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn("flex flex-col space-y-1.5 p-6", className)}
+    {...props}
+  />
+))
+CardHeader.displayName = "CardHeader"
 
-export default Card;
+const CardTitle = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn("font-semibold leading-none tracking-tight", className)}
+    {...props}
+  />
+))
+CardTitle.displayName = "CardTitle"
+
+const CardDescription = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn("text-sm text-muted-foreground", className)}
+    {...props}
+  />
+))
+CardDescription.displayName = "CardDescription"
+
+const CardContent = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div ref={ref} className={cn("p-6 pt-0", className)} {...props} />
+))
+CardContent.displayName = "CardContent"
+
+const CardFooter = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn("flex items-center p-6 pt-0", className)}
+    {...props}
+  />
+))
+CardFooter.displayName = "CardFooter"
+
+export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent }
