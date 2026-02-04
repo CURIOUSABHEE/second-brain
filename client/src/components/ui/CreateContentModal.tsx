@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import CrossIcon from "../../icons/CrossIcon";
-import Button from "./Button";
-import Input from "./Input";
+import { Button } from "./Button";
+import { Input } from "./Input";
 import { backend_url } from "../../config";
 import axios from "axios";
 
@@ -61,30 +61,29 @@ const CreateContentModal: React.FC<ContentProps> = ({ open, onClose }) => {
                     <h1>Type: </h1>
 
                     <Button
-                      text="Youtube"
                       size="sm"
-                      variants={
-                        type == ContentType.Youtube ? "primary" : "secondary"
+                      variant={
+                        type == ContentType.Youtube ? "default" : "secondary"
                       }
                       onClick={() => setType(ContentType.Youtube)}
-                    />
+                    >
+                      Youtube
+                    </Button>
                     <Button
-                      text="Twitter"
                       size="sm"
-                      variants={
-                        type == ContentType.Twitter ? "primary" : "secondary"
+                      variant={
+                        type == ContentType.Twitter ? "default" : "secondary"
                       }
                       onClick={() => setType(ContentType.Twitter)}
-                    />
+                    >
+                      Twitter
+                    </Button>
                   </div>
                 </div>
                 <div className="flex justify-center">
-                  <Button
-                    text="Submit"
-                    size="md"
-                    variants="primary"
-                    onClick={addContent}
-                  />
+                  <Button size="default" variant="default" onClick={addContent}>
+                    Submit
+                  </Button>
                 </div>
               </span>
             </div>

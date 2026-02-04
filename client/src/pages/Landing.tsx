@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import Button from "../components/ui/Button";
+import { Button } from "../components/ui/Button";
 import Logo from "../icons/Logo";
 import myVideo from "../assets/videos/myVideo.mp4";
 
@@ -15,7 +15,7 @@ const Landing: React.FC = () => {
         </div>
         <div className="space-x-4">
           <Link to="/signup">
-            <Button variants="primary" size="md" text="Get Started" />
+            <Button>Get Started</Button>
           </Link>
         </div>
       </header>
@@ -47,7 +47,7 @@ const Landing: React.FC = () => {
           </p>
           <div className="flex items-center justify-center gap-4">
             <Link to="/signup">
-              <Button variants="primary" size="lg" text="Start Organizing" />
+              <Button size="lg">Start Organizing</Button>
             </Link>
           </div>
         </div>
