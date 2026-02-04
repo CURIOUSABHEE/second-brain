@@ -1,2 +1,2 @@
-export const backend_url = "http://localhost:3000"
-export const frontend_url = "http://localhost:5173"
+export const backend_url = "https://second-brain-2-ndq2.onrender.com"
+export const frontend_url = "https://second-brain-three-eta.vercel.app"

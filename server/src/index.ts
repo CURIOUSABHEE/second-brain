@@ -23,6 +23,7 @@ app.use(cors({
     origin: [
         "http://localhost:5173",
         "http://localhost:5174",
+        "https://second-brain-three-eta.vercel.app"
     ],
     credentials: true
 }));
