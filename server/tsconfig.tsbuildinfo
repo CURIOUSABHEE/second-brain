@@ -1,1 +1,1 @@
-{"root":["./src/config.ts","./src/index.ts","./src/middleware.ts","./src/models/content.ts","./src/models/link.ts","./src/models/tags.ts","./src/models/user.ts","./src/mongoose/mongoose.ts","./src/schemas/schema.ts"],"version":"5.9.3"}
+{"root":["./src/index.ts","./src/middleware.ts","./src/models/content.ts","./src/models/link.ts","./src/models/tags.ts","./src/models/user.ts","./src/mongoose/mongoose.ts","./src/schemas/schema.ts"],"version":"5.9.3"}

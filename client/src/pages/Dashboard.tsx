@@ -11,17 +11,37 @@ import { backend_url, frontend_url } from "../config";
 
 function Dashboard() {
   const [modalOpen, setModalOpen] = useState(false);
+  const [filter, setFilter] = useState<"all" | "twitter" | "youtube">("all");
   const { contents, refresh } = useContent();
+
+  const filteredContents = contents.filter(
+    (content: { type: string }) => filter === "all" || content.type === filter,
+  );
 
   useEffect(() => {
     refresh();
-  }, [modalOpen]);
+  }, [modalOpen, refresh]);
+
+  const deleteContent = async (contentId: string) => {
+    try {
+      await axios.delete(`${backend_url}/api/v1/content/${contentId}`, {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      });
+      refresh();
+    } catch {
+      alert("Failed to delete content");
+    }
+  };
+
   return (
     <>
-      <Sidebar />
+      <Sidebar activeFilter={filter} onFilterChange={setFilter} />
       <CreateContentModal
         open={modalOpen}
         onClose={() => setModalOpen(false)}
+        onContentAdded={refresh}
       />
       <div className="ml-80">
         <div className="flex justify-end p-4 gap-4">
@@ -36,19 +56,23 @@ function Dashboard() {
           <Button
             variant="secondary"
             onClick={async () => {
-              const response = await axios.post(
-                `${backend_url}/api/v1/brain/share`,
-                {
-                  share: true,
-                },
-                {
-                  headers: {
-                    Authorization: localStorage.getItem("token"),
+              try {
+                const response = await axios.post(
+                  `${backend_url}/api/v1/brain/share`,
+                  {
+                    share: true,
                   },
-                },
-              );
-              const shareUrl = `${frontend_url}/share/${response.data.hash}`;
-              alert(shareUrl);
+                  {
+                    headers: {
+                      Authorization: localStorage.getItem("token"),
+                    },
+                  },
+                );
+                const shareUrl = `${frontend_url}/share/${response.data.hash}`;
+                alert(shareUrl);
+              } catch {
+                alert("Failed to share brain");
+              }
             }}
           >
             <ShareIcon size="md" />
@@ -56,9 +80,28 @@ function Dashboard() {
           </Button>
         </div>
         <div className="flex gap-4 flex-wrap">
-          {contents.map(({ key, title, url, type }) => (
-            <ContentCard key={key} title={title} link={url} type={type} />
-          ))}
+          {filteredContents.map(
+            ({
+              _id,
+              title,
+              url,
+              type,
+            }: {
+              _id: string;
+              title: string;
+              url: string;
+              type: "twitter" | "youtube";
+            }) => (
+              <ContentCard
+                key={_id}
+                contentId={_id}
+                title={title}
+                link={url}
+                type={type}
+                onDelete={deleteContent}
+              />
+            ),
+          )}
         </div>
       </div>
     </>

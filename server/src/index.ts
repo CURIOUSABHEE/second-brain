@@ -1,20 +1,22 @@
-import dotenv from "dotenv";
-dotenv.config();
-
 import express from "express";
 import { ContentModel, UserModel } from "./schemas/schema.js";
 import mongoose from "mongoose";
 import jwt from "jsonwebtoken"
-import { domain, MONGO_URI } from "./config.js";
-import { secret } from "./config.js";
 import { userMiddleware } from "./middleware.js"
-import { PORT } from "./config.js";
 import { LinkModel } from "./schemas/schema.js";
 import { randomBytes } from "node:crypto";
 import cors from "cors";
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 const app: express.Application = express();
+const secret = process.env.secret || "your-secret-key";
+const PORT = parseInt(process.env.port || "3000", 10);
+const MONGO_URI = process.env.MONGO_URI || "";
 
+if (!process.env.MONGO_URI) {
+    console.warn("Warning: MONGO_URI is not set in environment variables");
+}
 
 app.use(express.json());
 app.use(cors({
@@ -73,7 +75,7 @@ app.post("/api/v1/signin", async (req, res) => {
         if (existingUser) {
             const token = jwt.sign({
                 id: existingUser._id
-            }, secret);
+            }, secret as string);
             res.json({ token });
         } else {
             res.status(403).json({
@@ -132,17 +134,30 @@ app.get("/api/v1/content", userMiddleware, async (req, res) => {
 
 })
 
-app.delete("/api/v1/content", userMiddleware, async (req, res) => {
-    const contentId = req.body.contentId;
-    await ContentModel.deleteMany({
-        contentId,
-        userId: req.userId,
-    })
+app.delete("/api/v1/content/:contentId", userMiddleware, async (req, res) => {
+    try {
+        const { contentId } = req.params;
 
-    res.status(200).json({
-        message: "Deleted"
-    })
+        const result = await ContentModel.deleteOne({
+            _id: contentId,
+            userId: req.userId,
+        });
 
+        if (result.deletedCount === 0) {
+            return res.status(404).json({
+                message: "Content not found or unauthorized"
+            });
+        }
+
+        res.status(200).json({
+            message: "Deleted successfully"
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            message: "Failed to delete content"
+        });
+    }
 })
 
 app.post("/api/v1/brain/share", userMiddleware, async (req, res) => {
@@ -176,20 +191,20 @@ app.post("/api/v1/brain/share", userMiddleware, async (req, res) => {
 })
 
 
-app.get("/api/v1/brain/:sharelink", userMiddleware, async (req, res) => {
+app.get("/api/v1/brain/:sharelink", async (req, res) => {
     const hash = req.params.sharelink;
     const link = await LinkModel.findOne({
         hash
     })
-    if (!hash) {
-        res.json({
+    if (!link) {
+        res.status(404).json({
             message: "Sorry Incorrect Input",
         })
         return;
     }
 
-    const content = await ContentModel.findOne({
-        user: link?.userId,
+    const content = await ContentModel.find({
+        userId: link?.userId,
     })
 
     const user = await UserModel.findOne({
@@ -208,11 +223,11 @@ app.get("/api/v1/brain/:sharelink", userMiddleware, async (req, res) => {
 })
 
 
-app.listen(PORT, "0.0.0.0", () => {
+app.listen(PORT as number, "0.0.0.0", () => {
     console.log(`Server running on port ${PORT}`);
 });
 
 mongoose
-    .connect(MONGO_URI)
+    .connect(MONGO_URI as string)
     .then(() => console.log("MongoDB connected"))
     .catch(err => console.error("MongoDB connection failed", err));

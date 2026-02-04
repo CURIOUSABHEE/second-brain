@@ -4,6 +4,7 @@ import Dashboard from "./pages/Dashboard";
 import Landing from "./pages/Landing";
 import Signin from "./pages/Signin";
 import Signup from "./pages/Signup";
+import Share from "./pages/Share";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
           <Route path="/signin" element={<Signin />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/Dashboard" element={<Dashboard />} />
+          <Route path="/share/:hash" element={<Share />} />
         </Routes>
       </BrowserRouter>
       {/* <Dashboard /> */}

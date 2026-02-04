@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken"
-import { secret } from "./config.js";
+
+const secret = process.env.secret || "your-secret-key";
 
 declare global {
     namespace Express {
